@@ -21,14 +21,14 @@ class LoginTest(FunctionalTest):
 
         email_id = None
         start = time.time()
-        inbox = poplib.POP3_SSL('poczta.interia.pl')
+        inbox = poplib.POP3_SSL('pop.zoho.eu')
         try:
             inbox.user(test_email)
             inbox.pass_(os.environ['INTERIA_PASSWORD'])
             while time.time() - start < 60:
                 count, _ = inbox.stat()
-                for i in reversed(range(max(1, count - 10), count + 1)):
-                    _, lines, __ = inbox.retr(i)
+                for i in reversed(range(len(inbox.list()[1]))):
+                    _, lines, __ = inbox.retr(i+1)
                     lines = [l.decode('utf-8') for l in lines]
                     if f'Subject: {subject}' in lines:
                         email_id = i
@@ -46,7 +46,7 @@ class LoginTest(FunctionalTest):
         # And notices new function "log in" in the navbar
         # So she enter the email
         if self.staging_server:
-            test_mail = 'webapp.project@interia.pl'
+            test_mail = 'dudarz@zohomail.eu'
         else:
             test_mail = 'edith@example.com'
         
@@ -60,6 +60,7 @@ class LoginTest(FunctionalTest):
         ))
 
         # She checks her email
+        time.sleep(5) # workaround for too fast checks 
         body = self.wait_for_email(test_mail, SUBJECT)
 
         # It has an unique url in it
@@ -70,7 +71,7 @@ class LoginTest(FunctionalTest):
             self.fail(f"Could not find url in email body:\n{body}")
         url = url_search.group(0)
         self.assertIn(self.live_server_url, url)
-
+        print(url)
         # She clicks it
         self.browser.get(url)
         

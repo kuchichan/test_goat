@@ -20,6 +20,7 @@ class List(models.Model):
     def name(self):
         return self.item_set.first().text
 
+
 class Item(models.Model):
     text = models.TextField(default='')
     list = models.ForeignKey(List, default=None)
