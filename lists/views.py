@@ -21,19 +21,12 @@ def view_list(request, list_id):
             return redirect(list_)
     return render(request, "list.html", {"list": list_, "form": form})
 
-
-# def new_list(request):
-#     form = ItemForm(data=request.POST)
-#     if form.is_valid():
-#         list_ = List()
-#         if request.user.is_authenticated:            
-#             list_.owner = request.user
-#         list_.save()
-#         form.save(for_list=list_)
-#         return redirect(list_)
-#     else:
-#         return render(request, "home.html", {"form": form})
-
+def share_list(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    if request.method == "POST":
+        email = request.POST['sharee']
+        list_.shared_with.add(email)
+        return redirect(list_)
 
 def new_list(request):
     form = NewListForm(data=request.POST)
@@ -45,4 +38,5 @@ def new_list(request):
 
 def my_lists(request, email):
     owner = User.objects.get(email=email)
-    return render(request, 'my_lists.html', {'owner': owner})
+    shared_list = List.objects.filter(shared_with=owner)
+    return render(request, 'my_lists.html', {'owner': owner, 'shared_list': shared_list})
