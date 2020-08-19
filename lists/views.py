@@ -3,13 +3,16 @@ from django.contrib.auth import get_user_model
 from lists.forms import ItemForm, ExistingListItemForm, NewListForm
 from lists.models import List
 
-# Create your views here.
+from django.views.generic import FormView, CreateView, DetailView
 
 User = get_user_model()
 
-def home_page(request):
-    return render(request, "home.html", {'form': ItemForm()})
+class HomePageView(FormView):
+    template_name = 'home.html'
+    form_class = ItemForm
 
+# class ViewAndAddToList(DetailView):
+#     model = List
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
@@ -28,14 +31,14 @@ def share_list(request, list_id):
         list_.shared_with.add(email)
         return redirect(list_)
 
-def new_list(request):
-    form = NewListForm(data=request.POST)
-    if form.is_valid():
-        list_ = form.save(owner=request.user)
+class NewListView(CreateView):
+    form_class = NewListForm
+    template_name = 'home.html'
+
+    def form_valid(self, form):
+        list_ = form.save(owner=self.request.user)
         return redirect(list_)
-
-    return render(request, 'home.html', {'form': form})
-
+        
 def my_lists(request, email):
     owner = User.objects.get(email=email)
     shared_list = List.objects.filter(shared_with=owner)
