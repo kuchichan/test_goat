@@ -1,4 +1,5 @@
 from django import forms
+from django.db import models
 from .models import Item, List
 from django.core.exceptions import ValidationError
 
@@ -42,4 +43,11 @@ class ExistingListItemForm(ItemForm):
         except ValidationError as e:
             e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
             self._update_errors(e)
+
+class ShareeForm(forms.Form):
+    sharee = forms.EmailField()
+
+    def save(self):
+        return self.cleaned_data["sharee"]
+    
 

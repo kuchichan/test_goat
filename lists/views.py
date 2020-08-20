@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from lists.forms import ItemForm, ExistingListItemForm, NewListForm
+from lists.forms import ItemForm, ExistingListItemForm, NewListForm, ShareeForm
 from lists.models import List
 
 from django.views.generic import FormView, CreateView, DetailView, ListView, UpdateView
@@ -48,12 +48,16 @@ class MyListsView(ListView):
         context['shared_list'] = self.shared_list
         return context
 
+class ShareListView(DetailView, CreateView):
+    model = List
+    form_class = ShareeForm
+    template_name = "list.html"
 
-# Here, maybe it is not worth it to change to cbv
-def share_list(request, list_id):
-    list_ = List.objects.get(id=list_id)
-    if request.method == "POST":
-        email = request.POST['sharee']
-        list_.shared_with.add(email)
-        return redirect(list_)
-        
+    def get_form(self, form_class=None):
+        return self.form_class(data=self.request.POST)
+    
+    def form_valid(self, form):
+        self.object = self.get_object()
+        email = form.save()
+        self.object.shared_with.add(email)
+        return redirect(self.object)
