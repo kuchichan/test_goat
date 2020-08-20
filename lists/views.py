@@ -38,6 +38,10 @@ class NewListView(CreateView):
     def form_valid(self, form):
         list_ = form.save(owner=self.request.user)
         return redirect(list_)
+
+    def form_invalid(self, form):
+        return render(self.request, self.template_name, {"form": form})
+
         
 def my_lists(request, email):
     owner = User.objects.get(email=email)

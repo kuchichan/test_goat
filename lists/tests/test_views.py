@@ -175,7 +175,6 @@ class NewListViewUnitTest(unittest.TestCase):
         self.assertEqual(response, mock_redirect.return_value)
         mock_redirect.assert_called_once_with(mock_form.save.return_value)
 
-    @skip("Alignment for class view")
     @patch('lists.views.render')
     def test_renders_home_template_with_form_if_form_invalid(
         self, mock_render, mockNewListForm
