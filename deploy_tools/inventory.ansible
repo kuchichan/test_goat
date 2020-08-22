@@ -1,0 +1,8 @@
+[live]
+superlists.kuchichan.xyz ansible_become=yes ansible_ssh_user=kuchi
+
+[staging]
+superlists-staging.kuchichan.xyz ansible_become=yes ansible_ssh_user=kuchi
+
+[local]
+localhost ansible_ssh_user=root ssh_port=6666 ansible_host=127.0.0.1
