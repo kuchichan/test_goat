@@ -6,6 +6,12 @@ from django.core.exceptions import ValidationError
 EMPTY_ITEM_ERROR = "You can't have an empty list item"
 DUPLICATE_ITEM_ERROR = "You've already got this in your list"
 
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            _instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return _instances[cls]        
 
 class ItemForm(forms.models.ModelForm):
 
@@ -51,3 +57,12 @@ class ShareeForm(forms.Form):
         return self.cleaned_data["sharee"]
     
 
+
+def instert_sort(array):
+    for i in range(1, len(array)):
+        elem = array[i]
+        j = i - 1
+        while j <= 0 and elem < array[j]:
+            array[j] = array[j+1]
+        array[j] = elem
+        
