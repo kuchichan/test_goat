@@ -55,16 +55,19 @@
 	  <div class="text-center">
 	    <h1>{% block header_text %}{% endblock %}</h1>
 	    {% block list_form %}
-	    <form method="POST" action="{% block form_action %}{% endblock %}">
+	    <form id="id_item_form" method="POST" action="{% block form_action %}{% endblock %}">
 	      {{ form.text }}
 	      {% csrf_token %}
-	      {% if form.errors %}
-	      <div class="form group has-error">
-		<span class="help-block">{{ form.text.errors }}</span>
+	      <div class="form-group has-error">
+		<div class="help-block">
+		  {% if form.errors %}
+		     {{ form.text.errors }}
+		  {% endif %}
+		</div>
 	      </div>
-	      {% endif %} 
 	    </form>
 	    {% endblock %}
+	    
 	  </div>
 	</div>
       </div>
@@ -88,10 +91,12 @@
 	    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
 	    crossorigin="anonymous"></script>
     <script src="/static/list.js"></script>
-
+    {% block scripts %}
     <script>
-      window.Superlists.initialize();
+      $(document).ready(function() {
+	  window.Superlists.initialize();
+      });
     </script>
-    
+    {% endblock scripts %}
   </body>
 </html>
