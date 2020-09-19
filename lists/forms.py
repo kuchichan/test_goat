@@ -55,14 +55,3 @@ class ShareeForm(forms.Form):
 
     def save(self):
         return self.cleaned_data["sharee"]
-    
-
-
-def instert_sort(array):
-    for i in range(1, len(array)):
-        elem = array[i]
-        j = i - 1
-        while j <= 0 and elem < array[j]:
-            array[j] = array[j+1]
-        array[j] = elem
-        
